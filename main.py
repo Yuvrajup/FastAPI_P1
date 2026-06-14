@@ -10,7 +10,6 @@ from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 import shutil
 import os
 import uuid
-
 import tempfile
 
 
@@ -32,7 +31,7 @@ async def upload_file(
     temp_file_path=None
 
     try:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splittext(file.filename)[1]) as temp_file:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(file.filename)[1]) as temp_file:
             temp_file_path=temp_file.name
             shutil.copyfileobj(file.file, temp_file)
 
@@ -45,13 +44,13 @@ async def upload_file(
             )
         )
 
-        if upload_result.response.hhtp_status_code==200:
+        if upload_result.response_metadata.http_status_code==200:
 
             post = Post(
                 caption=caption,
-                url="dummy url",
-                file_type="photo",
-                file_name="dummy name"
+                url=upload_result.url,
+                file_type="video"if file.content_type.startswith("video/") else "image",
+                file_name=upload_result.name
             )
             session.add(post)
             await session.commit()
@@ -62,7 +61,7 @@ async def upload_file(
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         if temp_file_path and os.path.exists(temp_file_path):
-            os.unlike(temp_file_path)
+            os.unlink(temp_file_path)
         file.file.close()
 
 @app.get("/feed")
