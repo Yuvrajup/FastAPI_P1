@@ -115,7 +115,7 @@ async def delete_post(post_id:str,session:AsyncSession = Depends(get_async_sessi
 
 
         if not post:
-            raise HTTPException(status_code=404,detail="post not found")
+            raise HTTPException(status_code=404,detail="post not foundddddd")
         if post.user_id != user.id:
             raise HTTPException(status_code=403,detail="you are not authorized")
         await session.delete(post)
