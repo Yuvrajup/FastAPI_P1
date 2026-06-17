@@ -8,7 +8,7 @@ from fastapi_users.db import SQLAlchemyUserDatabase
 from app.db import User,get_user_db
 
 
-SECRET = "bkv vire vebir"
+SECRET = "bkvvirevebir"
 
 
 class UserManager(UUIDIDMixin,BaseUserManager[User,uuid.UUID]):
